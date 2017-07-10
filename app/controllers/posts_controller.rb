@@ -1,15 +1,17 @@
+require 'net/http'
+
 class PostsController < ApplicationController
 
   http_basic_authenticate_with name: "john", password:"1234", except:[:index, :show]
 
 
   def index
-    @posts = Post.all
+    @post = Post.all
 
   end
 
   def show
-    @post = Post.find(params[:posts_id])
+    @post = Post.find(params[:post_id])
   end
 
   def new
@@ -23,14 +25,12 @@ class PostsController < ApplicationController
 
     @post.save
     if (@post.save)
-      redirect_to @post # load the show view
+      redirect_to :action=>'show',:post_id=>@post.id #@post # load the show view
     else
       render 'new'
     end
 
   end
-
-
 
   def edit
     @post = Post.find(params[:id])
@@ -46,13 +46,13 @@ class PostsController < ApplicationController
     end
   end
 
+
   def destroy
     @post = Post.find(params[:id])
     @post.destroy
 
     redirect_to posts_path
   end
-
 
 
   private def post_params
